@@ -1,0 +1,2390 @@
+{
+ "subcharts": [
+  {
+   "name": "main",
+   "body": [
+    {
+     "assign": "said",
+     "value": "\"\"",
+     "comment": "MINI SIRI - a typed assistant with a learning classifier\nCreate every variable first (avoids RAPTOR 'not found' errors)"
+    },
+    {
+     "assign": "txt",
+     "value": "\"\""
+    },
+    {
+     "assign": "cur",
+     "value": "\"\""
+    },
+    {
+     "assign": "ntok",
+     "value": "0"
+    },
+    {
+     "assign": "code",
+     "value": "0"
+    },
+    {
+     "assign": "allnum",
+     "value": "0"
+    },
+    {
+     "assign": "val",
+     "value": "0"
+    },
+    {
+     "assign": "dg",
+     "value": "0"
+    },
+    {
+     "assign": "best",
+     "value": "0"
+    },
+    {
+     "assign": "bestscore",
+     "value": "0"
+    },
+    {
+     "assign": "found",
+     "value": "0"
+    },
+    {
+     "assign": "target",
+     "value": "\"\""
+    },
+    {
+     "assign": "cnt",
+     "value": "0"
+    },
+    {
+     "assign": "na",
+     "value": "0"
+    },
+    {
+     "assign": "nb",
+     "value": "0"
+    },
+    {
+     "assign": "op",
+     "value": "0"
+    },
+    {
+     "assign": "mt",
+     "value": "\"\""
+    },
+    {
+     "assign": "hh",
+     "value": "0"
+    },
+    {
+     "assign": "mm",
+     "value": "0"
+    },
+    {
+     "assign": "mtxt",
+     "value": "\"\""
+    },
+    {
+     "assign": "mo",
+     "value": "0"
+    },
+    {
+     "assign": "r",
+     "value": "0"
+    },
+    {
+     "assign": "cat",
+     "value": "0"
+    },
+    {
+     "assign": "learned",
+     "value": "0"
+    },
+    {
+     "assign": "stop",
+     "value": "0"
+    },
+    {
+     "assign": "done",
+     "value": "0"
+    },
+    {
+     "assign": "nint",
+     "value": "0"
+    },
+    {
+     "assign": "ntw",
+     "value": "0"
+    },
+    {
+     "assign": "nsw",
+     "value": "0"
+    },
+    {
+     "assign": "nlw",
+     "value": "0"
+    },
+    {
+     "assign": "t",
+     "value": "\"\""
+    },
+    {
+     "assign": "c1",
+     "value": "0"
+    },
+    {
+     "assign": "b",
+     "value": "0"
+    },
+    {
+     "assign": "dd",
+     "value": "0"
+    },
+    {
+     "assign": "yy",
+     "value": "0"
+    },
+    {
+     "assign": "mname",
+     "value": "\"\""
+    },
+    {
+     "assign": "ly",
+     "value": "0"
+    },
+    {
+     "assign": "sy",
+     "value": "0"
+    },
+    {
+     "call": "Clear_Console",
+     "comment": "start with an empty console (it keeps text from earlier runs)"
+    },
+    {
+     "call": "Open_Graph_Window(800, 520)",
+     "comment": "the chat window: shows the last 14 lines of the conversation"
+    },
+    {
+     "call": "Set_Window_Title(\"Mini Siri\")"
+    },
+    {
+     "assign": "nl",
+     "value": "0"
+    },
+    {
+     "assign": "line[1]",
+     "value": "\"\""
+    },
+    {
+     "assign": "who[1]",
+     "value": "0"
+    },
+    {
+     "assign": "newtext",
+     "value": "\"\""
+    },
+    {
+     "assign": "newwho",
+     "value": "0"
+    },
+    {
+     "assign": "sk",
+     "value": "0"
+    },
+    {
+     "call": "SetupKnowledge",
+     "comment": "load the training words, jokes and month names"
+    },
+    {
+     "call": "Play_Sound(\"siri_welcome.wav\")",
+     "comment": "Mini Siri talks: each answer plays a .wav clip recorded with\nWindows text-to-speech. The siri_*.wav files must be in the same folder."
+    },
+    {
+     "assign": "newtext",
+     "value": "\"Siri: Hi, I am Mini Siri! Ask me the time, the date, a joke,\""
+    },
+    {
+     "assign": "newwho",
+     "value": "2"
+    },
+    {
+     "call": "Say"
+    },
+    {
+     "assign": "newtext",
+     "value": "\"      some maths (12 times 7), to flip a coin or roll a dice.\""
+    },
+    {
+     "assign": "newwho",
+     "value": "2"
+    },
+    {
+     "call": "Say"
+    },
+    {
+     "assign": "newtext",
+     "value": "\"      If I do not understand, you can teach me. Say bye to stop.\""
+    },
+    {
+     "assign": "newwho",
+     "value": "2"
+    },
+    {
+     "call": "Say"
+    },
+    {
+     "repeat": [
+      {
+       "input": "said",
+       "prompt": "You:"
+      },
+      {
+       "assign": "txt",
+       "value": "\"\" + said",
+       "comment": "make sure it is text (a lone number is read as a number)"
+      },
+      {
+       "assign": "newtext",
+       "value": "\"You: \" + txt"
+      },
+      {
+       "assign": "newwho",
+       "value": "1"
+      },
+      {
+       "call": "Say"
+      },
+      {
+       "call": "Tokenize"
+      },
+      {
+       "call": "Classify"
+      },
+      {
+       "if": "bestscore > 0",
+       "then": [
+        {
+         "assign": "newtext",
+         "value": "\"      [classifier: intent = \" + iname[best] + \", \" + bestscore + \" matching word(s)]\""
+        },
+        {
+         "assign": "newwho",
+         "value": "3"
+        },
+        {
+         "call": "Say"
+        },
+        {
+         "call": "Respond"
+        }
+       ],
+       "else": [
+        {
+         "if": "ntok = 0",
+         "then": [
+          {
+           "call": "Play_Sound(\"siri_didnt.wav\")"
+          },
+          {
+           "assign": "newtext",
+           "value": "\"Siri: I did not catch that.\""
+          },
+          {
+           "assign": "newwho",
+           "value": "2"
+          },
+          {
+           "call": "Say"
+          }
+         ],
+         "else": [
+          {
+           "call": "Teach"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "until": "done = 1"
+    },
+    {
+     "output": "\"(close this window or press Stop to finish)\""
+    }
+   ]
+  },
+  {
+   "name": "SetupKnowledge",
+   "body": [
+    {
+     "assign": "nint",
+     "value": "10",
+     "comment": "THE TRAINING DATA\nEvery known word is stored with the intent it belongs to:\ntw[j] = word, tint[j] = intent number.\nWords are sorted by first letter; bstart[b]..bend[b] is the block of\nwords starting with letter b (a=1 ... z=26, symbols=27), so a word is only\ncompared with the few words that start with the same letter."
+    },
+    {
+     "assign": "iname[1]",
+     "value": "\"goodbye\""
+    },
+    {
+     "assign": "iname[2]",
+     "value": "\"math\""
+    },
+    {
+     "assign": "iname[3]",
+     "value": "\"time\""
+    },
+    {
+     "assign": "iname[4]",
+     "value": "\"date\""
+    },
+    {
+     "assign": "iname[5]",
+     "value": "\"joke\""
+    },
+    {
+     "assign": "iname[6]",
+     "value": "\"greeting\""
+    },
+    {
+     "assign": "iname[7]",
+     "value": "\"about me\""
+    },
+    {
+     "assign": "iname[8]",
+     "value": "\"how are you\""
+    },
+    {
+     "assign": "iname[9]",
+     "value": "\"thanks\""
+    },
+    {
+     "assign": "iname[10]",
+     "value": "\"coin / dice\""
+    },
+    {
+     "assign": "tw[1]",
+     "value": "\"add\""
+    },
+    {
+     "assign": "tint[1]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[2]",
+     "value": "\"afternoon\""
+    },
+    {
+     "assign": "tint[2]",
+     "value": "6"
+    },
+    {
+     "assign": "tw[3]",
+     "value": "\"appreciate\""
+    },
+    {
+     "assign": "tint[3]",
+     "value": "9"
+    },
+    {
+     "assign": "tw[4]",
+     "value": "\"built\""
+    },
+    {
+     "assign": "tint[4]",
+     "value": "7"
+    },
+    {
+     "assign": "tw[5]",
+     "value": "\"bye\""
+    },
+    {
+     "assign": "tint[5]",
+     "value": "1"
+    },
+    {
+     "assign": "tw[6]",
+     "value": "\"calculate\""
+    },
+    {
+     "assign": "tint[6]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[7]",
+     "value": "\"called\""
+    },
+    {
+     "assign": "tint[7]",
+     "value": "7"
+    },
+    {
+     "assign": "tw[8]",
+     "value": "\"clock\""
+    },
+    {
+     "assign": "tint[8]",
+     "value": "3"
+    },
+    {
+     "assign": "tw[9]",
+     "value": "\"coin\""
+    },
+    {
+     "assign": "tint[9]",
+     "value": "10"
+    },
+    {
+     "assign": "tw[10]",
+     "value": "\"creator\""
+    },
+    {
+     "assign": "tint[10]",
+     "value": "7"
+    },
+    {
+     "assign": "tw[11]",
+     "value": "\"date\""
+    },
+    {
+     "assign": "tint[11]",
+     "value": "4"
+    },
+    {
+     "assign": "tw[12]",
+     "value": "\"day\""
+    },
+    {
+     "assign": "tint[12]",
+     "value": "4"
+    },
+    {
+     "assign": "tw[13]",
+     "value": "\"dice\""
+    },
+    {
+     "assign": "tint[13]",
+     "value": "10"
+    },
+    {
+     "assign": "tw[14]",
+     "value": "\"die\""
+    },
+    {
+     "assign": "tint[14]",
+     "value": "10"
+    },
+    {
+     "assign": "tw[15]",
+     "value": "\"divide\""
+    },
+    {
+     "assign": "tint[15]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[16]",
+     "value": "\"divided\""
+    },
+    {
+     "assign": "tint[16]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[17]",
+     "value": "\"doing\""
+    },
+    {
+     "assign": "tint[17]",
+     "value": "8"
+    },
+    {
+     "assign": "tw[18]",
+     "value": "\"evening\""
+    },
+    {
+     "assign": "tint[18]",
+     "value": "6"
+    },
+    {
+     "assign": "tw[19]",
+     "value": "\"exit\""
+    },
+    {
+     "assign": "tint[19]",
+     "value": "1"
+    },
+    {
+     "assign": "tw[20]",
+     "value": "\"feel\""
+    },
+    {
+     "assign": "tint[20]",
+     "value": "8"
+    },
+    {
+     "assign": "tw[21]",
+     "value": "\"feeling\""
+    },
+    {
+     "assign": "tint[21]",
+     "value": "8"
+    },
+    {
+     "assign": "tw[22]",
+     "value": "\"flip\""
+    },
+    {
+     "assign": "tint[22]",
+     "value": "10"
+    },
+    {
+     "assign": "tw[23]",
+     "value": "\"funny\""
+    },
+    {
+     "assign": "tint[23]",
+     "value": "5"
+    },
+    {
+     "assign": "tw[24]",
+     "value": "\"going\""
+    },
+    {
+     "assign": "tint[24]",
+     "value": "8"
+    },
+    {
+     "assign": "tw[25]",
+     "value": "\"goodbye\""
+    },
+    {
+     "assign": "tint[25]",
+     "value": "1"
+    },
+    {
+     "assign": "tw[26]",
+     "value": "\"hello\""
+    },
+    {
+     "assign": "tint[26]",
+     "value": "6"
+    },
+    {
+     "assign": "tw[27]",
+     "value": "\"hey\""
+    },
+    {
+     "assign": "tint[27]",
+     "value": "6"
+    },
+    {
+     "assign": "tw[28]",
+     "value": "\"hi\""
+    },
+    {
+     "assign": "tint[28]",
+     "value": "6"
+    },
+    {
+     "assign": "tw[29]",
+     "value": "\"hiya\""
+    },
+    {
+     "assign": "tint[29]",
+     "value": "6"
+    },
+    {
+     "assign": "tw[30]",
+     "value": "\"hour\""
+    },
+    {
+     "assign": "tint[30]",
+     "value": "3"
+    },
+    {
+     "assign": "tw[31]",
+     "value": "\"hours\""
+    },
+    {
+     "assign": "tint[31]",
+     "value": "3"
+    },
+    {
+     "assign": "tw[32]",
+     "value": "\"how\""
+    },
+    {
+     "assign": "tint[32]",
+     "value": "8"
+    },
+    {
+     "assign": "tw[33]",
+     "value": "\"joke\""
+    },
+    {
+     "assign": "tint[33]",
+     "value": "5"
+    },
+    {
+     "assign": "tw[34]",
+     "value": "\"jokes\""
+    },
+    {
+     "assign": "tint[34]",
+     "value": "5"
+    },
+    {
+     "assign": "tw[35]",
+     "value": "\"later\""
+    },
+    {
+     "assign": "tint[35]",
+     "value": "1"
+    },
+    {
+     "assign": "tw[36]",
+     "value": "\"laugh\""
+    },
+    {
+     "assign": "tint[36]",
+     "value": "5"
+    },
+    {
+     "assign": "tw[37]",
+     "value": "\"made\""
+    },
+    {
+     "assign": "tint[37]",
+     "value": "7"
+    },
+    {
+     "assign": "tw[38]",
+     "value": "\"math\""
+    },
+    {
+     "assign": "tint[38]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[39]",
+     "value": "\"minus\""
+    },
+    {
+     "assign": "tint[39]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[40]",
+     "value": "\"minute\""
+    },
+    {
+     "assign": "tint[40]",
+     "value": "3"
+    },
+    {
+     "assign": "tw[41]",
+     "value": "\"month\""
+    },
+    {
+     "assign": "tint[41]",
+     "value": "4"
+    },
+    {
+     "assign": "tw[42]",
+     "value": "\"morning\""
+    },
+    {
+     "assign": "tint[42]",
+     "value": "6"
+    },
+    {
+     "assign": "tw[43]",
+     "value": "\"multiplied\""
+    },
+    {
+     "assign": "tint[43]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[44]",
+     "value": "\"multiply\""
+    },
+    {
+     "assign": "tint[44]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[45]",
+     "value": "\"name\""
+    },
+    {
+     "assign": "tint[45]",
+     "value": "7"
+    },
+    {
+     "assign": "tw[46]",
+     "value": "\"oclock\""
+    },
+    {
+     "assign": "tint[46]",
+     "value": "3"
+    },
+    {
+     "assign": "tw[47]",
+     "value": "\"over\""
+    },
+    {
+     "assign": "tint[47]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[48]",
+     "value": "\"plus\""
+    },
+    {
+     "assign": "tint[48]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[49]",
+     "value": "\"quit\""
+    },
+    {
+     "assign": "tint[49]",
+     "value": "1"
+    },
+    {
+     "assign": "tw[50]",
+     "value": "\"random\""
+    },
+    {
+     "assign": "tint[50]",
+     "value": "10"
+    },
+    {
+     "assign": "tw[51]",
+     "value": "\"roll\""
+    },
+    {
+     "assign": "tint[51]",
+     "value": "10"
+    },
+    {
+     "assign": "tw[52]",
+     "value": "\"stop\""
+    },
+    {
+     "assign": "tint[52]",
+     "value": "1"
+    },
+    {
+     "assign": "tw[53]",
+     "value": "\"subtract\""
+    },
+    {
+     "assign": "tint[53]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[54]",
+     "value": "\"sum\""
+    },
+    {
+     "assign": "tint[54]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[55]",
+     "value": "\"sup\""
+    },
+    {
+     "assign": "tint[55]",
+     "value": "6"
+    },
+    {
+     "assign": "tw[56]",
+     "value": "\"thank\""
+    },
+    {
+     "assign": "tint[56]",
+     "value": "9"
+    },
+    {
+     "assign": "tw[57]",
+     "value": "\"thanks\""
+    },
+    {
+     "assign": "tint[57]",
+     "value": "9"
+    },
+    {
+     "assign": "tw[58]",
+     "value": "\"thx\""
+    },
+    {
+     "assign": "tint[58]",
+     "value": "9"
+    },
+    {
+     "assign": "tw[59]",
+     "value": "\"time\""
+    },
+    {
+     "assign": "tint[59]",
+     "value": "3"
+    },
+    {
+     "assign": "tw[60]",
+     "value": "\"times\""
+    },
+    {
+     "assign": "tint[60]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[61]",
+     "value": "\"today\""
+    },
+    {
+     "assign": "tint[61]",
+     "value": "4"
+    },
+    {
+     "assign": "tw[62]",
+     "value": "\"toss\""
+    },
+    {
+     "assign": "tint[62]",
+     "value": "10"
+    },
+    {
+     "assign": "tw[63]",
+     "value": "\"who\""
+    },
+    {
+     "assign": "tint[63]",
+     "value": "7"
+    },
+    {
+     "assign": "tw[64]",
+     "value": "\"x\""
+    },
+    {
+     "assign": "tint[64]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[65]",
+     "value": "\"year\""
+    },
+    {
+     "assign": "tint[65]",
+     "value": "4"
+    },
+    {
+     "assign": "tw[66]",
+     "value": "\"yourself\""
+    },
+    {
+     "assign": "tint[66]",
+     "value": "7"
+    },
+    {
+     "assign": "tw[67]",
+     "value": "\"*\""
+    },
+    {
+     "assign": "tint[67]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[68]",
+     "value": "\"+\""
+    },
+    {
+     "assign": "tint[68]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[69]",
+     "value": "\"-\""
+    },
+    {
+     "assign": "tint[69]",
+     "value": "2"
+    },
+    {
+     "assign": "tw[70]",
+     "value": "\"/\""
+    },
+    {
+     "assign": "tint[70]",
+     "value": "2"
+    },
+    {
+     "assign": "ntw",
+     "value": "70",
+     "comment": "number of training words"
+    },
+    {
+     "assign": "bstart[1]",
+     "value": "1"
+    },
+    {
+     "assign": "bend[1]",
+     "value": "3"
+    },
+    {
+     "assign": "bstart[2]",
+     "value": "4"
+    },
+    {
+     "assign": "bend[2]",
+     "value": "5"
+    },
+    {
+     "assign": "bstart[3]",
+     "value": "6"
+    },
+    {
+     "assign": "bend[3]",
+     "value": "10"
+    },
+    {
+     "assign": "bstart[4]",
+     "value": "11"
+    },
+    {
+     "assign": "bend[4]",
+     "value": "17"
+    },
+    {
+     "assign": "bstart[5]",
+     "value": "18"
+    },
+    {
+     "assign": "bend[5]",
+     "value": "19"
+    },
+    {
+     "assign": "bstart[6]",
+     "value": "20"
+    },
+    {
+     "assign": "bend[6]",
+     "value": "23"
+    },
+    {
+     "assign": "bstart[7]",
+     "value": "24"
+    },
+    {
+     "assign": "bend[7]",
+     "value": "25"
+    },
+    {
+     "assign": "bstart[8]",
+     "value": "26"
+    },
+    {
+     "assign": "bend[8]",
+     "value": "32"
+    },
+    {
+     "assign": "bstart[9]",
+     "value": "1"
+    },
+    {
+     "assign": "bend[9]",
+     "value": "0"
+    },
+    {
+     "assign": "bstart[10]",
+     "value": "33"
+    },
+    {
+     "assign": "bend[10]",
+     "value": "34"
+    },
+    {
+     "assign": "bstart[11]",
+     "value": "1"
+    },
+    {
+     "assign": "bend[11]",
+     "value": "0"
+    },
+    {
+     "assign": "bstart[12]",
+     "value": "35"
+    },
+    {
+     "assign": "bend[12]",
+     "value": "36"
+    },
+    {
+     "assign": "bstart[13]",
+     "value": "37"
+    },
+    {
+     "assign": "bend[13]",
+     "value": "44"
+    },
+    {
+     "assign": "bstart[14]",
+     "value": "45"
+    },
+    {
+     "assign": "bend[14]",
+     "value": "45"
+    },
+    {
+     "assign": "bstart[15]",
+     "value": "46"
+    },
+    {
+     "assign": "bend[15]",
+     "value": "47"
+    },
+    {
+     "assign": "bstart[16]",
+     "value": "48"
+    },
+    {
+     "assign": "bend[16]",
+     "value": "48"
+    },
+    {
+     "assign": "bstart[17]",
+     "value": "49"
+    },
+    {
+     "assign": "bend[17]",
+     "value": "49"
+    },
+    {
+     "assign": "bstart[18]",
+     "value": "50"
+    },
+    {
+     "assign": "bend[18]",
+     "value": "51"
+    },
+    {
+     "assign": "bstart[19]",
+     "value": "52"
+    },
+    {
+     "assign": "bend[19]",
+     "value": "55"
+    },
+    {
+     "assign": "bstart[20]",
+     "value": "56"
+    },
+    {
+     "assign": "bend[20]",
+     "value": "62"
+    },
+    {
+     "assign": "bstart[21]",
+     "value": "1"
+    },
+    {
+     "assign": "bend[21]",
+     "value": "0"
+    },
+    {
+     "assign": "bstart[22]",
+     "value": "1"
+    },
+    {
+     "assign": "bend[22]",
+     "value": "0"
+    },
+    {
+     "assign": "bstart[23]",
+     "value": "63"
+    },
+    {
+     "assign": "bend[23]",
+     "value": "63"
+    },
+    {
+     "assign": "bstart[24]",
+     "value": "64"
+    },
+    {
+     "assign": "bend[24]",
+     "value": "64"
+    },
+    {
+     "assign": "bstart[25]",
+     "value": "65"
+    },
+    {
+     "assign": "bend[25]",
+     "value": "66"
+    },
+    {
+     "assign": "bstart[26]",
+     "value": "1"
+    },
+    {
+     "assign": "bend[26]",
+     "value": "0"
+    },
+    {
+     "assign": "bstart[27]",
+     "value": "67"
+    },
+    {
+     "assign": "bend[27]",
+     "value": "70"
+    },
+    {
+     "assign": "nlw",
+     "value": "0",
+     "comment": "words learned while chatting go in lw[] / lint[]"
+    },
+    {
+     "assign": "lw[1]",
+     "value": "\"\""
+    },
+    {
+     "assign": "lint[1]",
+     "value": "0"
+    },
+    {
+     "assign": "sw[1]",
+     "value": "\"the\"",
+     "comment": "stop words: too common to learn from"
+    },
+    {
+     "assign": "sw[2]",
+     "value": "\"a\""
+    },
+    {
+     "assign": "sw[3]",
+     "value": "\"an\""
+    },
+    {
+     "assign": "sw[4]",
+     "value": "\"is\""
+    },
+    {
+     "assign": "sw[5]",
+     "value": "\"are\""
+    },
+    {
+     "assign": "sw[6]",
+     "value": "\"what\""
+    },
+    {
+     "assign": "sw[7]",
+     "value": "\"whats\""
+    },
+    {
+     "assign": "sw[8]",
+     "value": "\"it\""
+    },
+    {
+     "assign": "sw[9]",
+     "value": "\"me\""
+    },
+    {
+     "assign": "sw[10]",
+     "value": "\"you\""
+    },
+    {
+     "assign": "sw[11]",
+     "value": "\"i\""
+    },
+    {
+     "assign": "sw[12]",
+     "value": "\"to\""
+    },
+    {
+     "assign": "sw[13]",
+     "value": "\"of\""
+    },
+    {
+     "assign": "sw[14]",
+     "value": "\"please\""
+    },
+    {
+     "assign": "sw[15]",
+     "value": "\"can\""
+    },
+    {
+     "assign": "sw[16]",
+     "value": "\"do\""
+    },
+    {
+     "assign": "sw[17]",
+     "value": "\"does\""
+    },
+    {
+     "assign": "sw[18]",
+     "value": "\"my\""
+    },
+    {
+     "assign": "sw[19]",
+     "value": "\"your\""
+    },
+    {
+     "assign": "sw[20]",
+     "value": "\"and\""
+    },
+    {
+     "assign": "sw[21]",
+     "value": "\"in\""
+    },
+    {
+     "assign": "sw[22]",
+     "value": "\"on\""
+    },
+    {
+     "assign": "sw[23]",
+     "value": "\"tell\""
+    },
+    {
+     "assign": "sw[24]",
+     "value": "\"be\""
+    },
+    {
+     "assign": "nsw",
+     "value": "24"
+    },
+    {
+     "assign": "joke[1]",
+     "value": "\"Why did the flowchart go to therapy? It had too many unresolved loops.\""
+    },
+    {
+     "assign": "joke[2]",
+     "value": "\"I would tell you a UDP joke, but you might not get it.\""
+    },
+    {
+     "assign": "joke[3]",
+     "value": "\"Why do programmers prefer dark mode? Because light attracts bugs.\""
+    },
+    {
+     "assign": "joke[4]",
+     "value": "\"There are 10 kinds of people: those who understand binary and those who don't.\""
+    },
+    {
+     "assign": "greet[1]",
+     "value": "\"Hello! How can I help you?\""
+    },
+    {
+     "assign": "greet[2]",
+     "value": "\"Hi there! Ask me the time, a joke, or some maths.\""
+    },
+    {
+     "assign": "greet[3]",
+     "value": "\"Hey! What can I do for you?\""
+    },
+    {
+     "assign": "mon[1]",
+     "value": "\"January\""
+    },
+    {
+     "assign": "mon[2]",
+     "value": "\"February\""
+    },
+    {
+     "assign": "mon[3]",
+     "value": "\"March\""
+    },
+    {
+     "assign": "mon[4]",
+     "value": "\"April\""
+    },
+    {
+     "assign": "mon[5]",
+     "value": "\"May\""
+    },
+    {
+     "assign": "mon[6]",
+     "value": "\"June\""
+    },
+    {
+     "assign": "mon[7]",
+     "value": "\"July\""
+    },
+    {
+     "assign": "mon[8]",
+     "value": "\"August\""
+    },
+    {
+     "assign": "mon[9]",
+     "value": "\"September\""
+    },
+    {
+     "assign": "mon[10]",
+     "value": "\"October\""
+    },
+    {
+     "assign": "mon[11]",
+     "value": "\"November\""
+    },
+    {
+     "assign": "mon[12]",
+     "value": "\"December\""
+    }
+   ]
+  },
+  {
+   "name": "Tokenize",
+   "body": [
+    {
+     "assign": "ntok",
+     "value": "0",
+     "comment": "Split the sentence into lower-case words.\nLetters and digits build a word; anything else ends it.\n+ - * / become words of their own (for maths)."
+    },
+    {
+     "assign": "cur",
+     "value": "\"\""
+    },
+    {
+     "for": "ti",
+     "from": "1",
+     "to": "length_of(txt)",
+     "body": [
+      {
+       "assign": "code",
+       "value": "to_ascii(txt[ti])"
+      },
+      {
+       "if": "code >= 65 and code <= 90",
+       "then": [
+        {
+         "assign": "code",
+         "value": "code + 32"
+        }
+       ],
+       "comment": "A..Z -> a..z"
+      },
+      {
+       "if": "(code >= 97 and code <= 122) or (code >= 48 and code <= 57)",
+       "then": [
+        {
+         "assign": "cur",
+         "value": "cur + to_character(code)"
+        }
+       ],
+       "else": [
+        {
+         "call": "PushWord"
+        },
+        {
+         "if": "code = 43 or code = 45 or code = 42 or code = 47",
+         "then": [
+          {
+           "assign": "cur",
+           "value": "\"\" + to_character(code)"
+          },
+          {
+           "call": "PushWord"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "call": "PushWord",
+     "comment": "the last word"
+    }
+   ]
+  },
+  {
+   "name": "PushWord",
+   "body": [
+    {
+     "if": "length_of(cur) > 0",
+     "then": [
+      {
+       "assign": "ntok",
+       "value": "ntok + 1"
+      },
+      {
+       "assign": "tok[ntok]",
+       "value": "cur"
+      },
+      {
+       "assign": "allnum",
+       "value": "1",
+       "comment": "is the word a whole number? then keep its value for maths"
+      },
+      {
+       "assign": "val",
+       "value": "0"
+      },
+      {
+       "for": "pc",
+       "from": "1",
+       "to": "length_of(cur)",
+       "body": [
+        {
+         "assign": "dg",
+         "value": "to_ascii(cur[pc]) - 48"
+        },
+        {
+         "if": "dg < 0 or dg > 9",
+         "then": [
+          {
+           "assign": "allnum",
+           "value": "0"
+          }
+         ],
+         "else": [
+          {
+           "assign": "val",
+           "value": "val * 10 + dg"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "assign": "isnum[ntok]",
+       "value": "allnum"
+      },
+      {
+       "assign": "numval[ntok]",
+       "value": "val"
+      },
+      {
+       "assign": "cur",
+       "value": "\"\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Classify",
+   "body": [
+    {
+     "for": "cq",
+     "from": "1",
+     "to": "nint",
+     "body": [
+      {
+       "assign": "score[cq]",
+       "value": "0"
+      }
+     ],
+     "comment": "THE CLASSIFIER (bag of words)\nEach intent gets one point for every word of the\nsentence that appears in its training words.\nThe intent with the most points wins."
+    },
+    {
+     "for": "sk",
+     "from": "1",
+     "to": "ntok",
+     "body": [
+      {
+       "if": "isnum[sk] = 0",
+       "then": [
+        {
+         "assign": "t",
+         "value": "tok[sk]"
+        },
+        {
+         "assign": "c1",
+         "value": "to_ascii(t[1])",
+         "comment": "first letter -> which block of training words to search"
+        },
+        {
+         "if": "c1 >= 97 and c1 <= 122",
+         "then": [
+          {
+           "assign": "b",
+           "value": "c1 - 96"
+          }
+         ],
+         "else": [
+          {
+           "assign": "b",
+           "value": "27"
+          }
+         ]
+        },
+        {
+         "for": "sj",
+         "from": "bstart[b]",
+         "to": "bend[b]",
+         "body": [
+          {
+           "if": "t = tw[sj]",
+           "then": [
+            {
+             "assign": "score[tint[sj]]",
+             "value": "score[tint[sj]] + 1"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "for": "sj",
+         "from": "1",
+         "to": "nlw",
+         "body": [
+          {
+           "if": "t = lw[sj]",
+           "then": [
+            {
+             "assign": "score[lint[sj]]",
+             "value": "score[lint[sj]] + 1"
+            }
+           ]
+          }
+         ],
+         "comment": "also check the words learned from the user"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "assign": "best",
+     "value": "0"
+    },
+    {
+     "assign": "bestscore",
+     "value": "0"
+    },
+    {
+     "for": "cq",
+     "from": "1",
+     "to": "nint",
+     "body": [
+      {
+       "if": "score[cq] > bestscore",
+       "then": [
+        {
+         "assign": "bestscore",
+         "value": "score[cq]"
+        },
+        {
+         "assign": "best",
+         "value": "cq"
+        }
+       ],
+       "comment": "ties go to the lower intent number"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Respond",
+   "body": [
+    {
+     "if": "best = 1",
+     "then": [
+      {
+       "call": "Play_Sound(\"siri_bye.wav\")",
+       "comment": "SPEAK: play the recorded voice clip for this answer"
+      },
+      {
+       "assign": "newtext",
+       "value": "\"Siri: Goodbye! Thanks for chatting.\""
+      },
+      {
+       "assign": "newwho",
+       "value": "2"
+      },
+      {
+       "call": "Say"
+      },
+      {
+       "assign": "done",
+       "value": "1"
+      }
+     ],
+     "else": [
+      {
+       "if": "best = 2",
+       "then": [
+        {
+         "call": "DoMath"
+        }
+       ],
+       "else": [
+        {
+         "if": "best = 3",
+         "then": [
+          {
+           "assign": "hh",
+           "value": "Current_Hour",
+           "comment": "time from the computer's clock"
+          },
+          {
+           "assign": "mm",
+           "value": "Current_Minute"
+          },
+          {
+           "if": "mm < 10",
+           "then": [
+            {
+             "assign": "mtxt",
+             "value": "\"0\" + mm"
+            }
+           ],
+           "else": [
+            {
+             "assign": "mtxt",
+             "value": "\"\" + mm"
+            }
+           ]
+          },
+          {
+           "call": "Play_Sound(\"siri_time.wav\")"
+          },
+          {
+           "assign": "newtext",
+           "value": "\"Siri: It is \" + hh + \":\" + mtxt + \".\""
+          },
+          {
+           "assign": "newwho",
+           "value": "2"
+          },
+          {
+           "call": "Say"
+          }
+         ],
+         "else": [
+          {
+           "if": "best = 4",
+           "then": [
+            {
+             "assign": "dd",
+             "value": "Current_Day",
+             "comment": "date from the computer's clock\n(read into variables first: RAPTOR fails if\nthese functions are used inside an output)"
+            },
+            {
+             "assign": "mo",
+             "value": "Current_Month"
+            },
+            {
+             "assign": "yy",
+             "value": "Current_Year"
+            },
+            {
+             "assign": "mname",
+             "value": "mon[mo]"
+            },
+            {
+             "call": "Play_Sound(\"siri_date.wav\")"
+            },
+            {
+             "assign": "newtext",
+             "value": "\"Siri: Today is \" + dd + \" \" + mname + \" \" + yy + \".\""
+            },
+            {
+             "assign": "newwho",
+             "value": "2"
+            },
+            {
+             "call": "Say"
+            }
+           ],
+           "else": [
+            {
+             "if": "best = 5",
+             "then": [
+              {
+               "assign": "r",
+               "value": "floor(random * 4) + 1",
+               "comment": "pick a random joke"
+              },
+              {
+               "call": "Play_Sound(\"siri_joke\" + r + \".wav\")"
+              },
+              {
+               "assign": "newtext",
+               "value": "\"Siri: \" + joke[r]"
+              },
+              {
+               "assign": "newwho",
+               "value": "2"
+              },
+              {
+               "call": "Say"
+              }
+             ],
+             "else": [
+              {
+               "if": "best = 6",
+               "then": [
+                {
+                 "assign": "r",
+                 "value": "floor(random * 3) + 1"
+                },
+                {
+                 "call": "Play_Sound(\"siri_greet\" + r + \".wav\")"
+                },
+                {
+                 "assign": "newtext",
+                 "value": "\"Siri: \" + greet[r]"
+                },
+                {
+                 "assign": "newwho",
+                 "value": "2"
+                },
+                {
+                 "call": "Say"
+                }
+               ],
+               "else": [
+                {
+                 "if": "best = 7",
+                 "then": [
+                  {
+                   "call": "Play_Sound(\"siri_about.wav\")"
+                  },
+                  {
+                   "assign": "newtext",
+                   "value": "\"Siri: I am Mini Siri, an assistant built entirely as a RAPTOR flowchart.\""
+                  },
+                  {
+                   "assign": "newwho",
+                   "value": "2"
+                  },
+                  {
+                   "call": "Say"
+                  }
+                 ],
+                 "else": [
+                  {
+                   "if": "best = 8",
+                   "then": [
+                    {
+                     "call": "Play_Sound(\"siri_howareyou.wav\")"
+                    },
+                    {
+                     "assign": "newtext",
+                     "value": "\"Siri: I am doing great - all my loops are running smoothly!\""
+                    },
+                    {
+                     "assign": "newwho",
+                     "value": "2"
+                    },
+                    {
+                     "call": "Say"
+                    }
+                   ],
+                   "else": [
+                    {
+                     "if": "best = 9",
+                     "then": [
+                      {
+                       "call": "Play_Sound(\"siri_thanks.wav\")"
+                      },
+                      {
+                       "assign": "newtext",
+                       "value": "\"Siri: You are welcome!\""
+                      },
+                      {
+                       "assign": "newwho",
+                       "value": "2"
+                      },
+                      {
+                       "call": "Say"
+                      }
+                     ],
+                     "else": [
+                      {
+                       "assign": "target",
+                       "value": "\"coin\""
+                      },
+                      {
+                       "call": "HasWord"
+                      },
+                      {
+                       "if": "found = 1",
+                       "then": [
+                        {
+                         "if": "random < 0.5",
+                         "then": [
+                          {
+                           "call": "Play_Sound(\"siri_heads.wav\")"
+                          },
+                          {
+                           "assign": "newtext",
+                           "value": "\"Siri: I flipped a coin... HEADS!\""
+                          },
+                          {
+                           "assign": "newwho",
+                           "value": "2"
+                          },
+                          {
+                           "call": "Say"
+                          }
+                         ],
+                         "else": [
+                          {
+                           "call": "Play_Sound(\"siri_tails.wav\")"
+                          },
+                          {
+                           "assign": "newtext",
+                           "value": "\"Siri: I flipped a coin... TAILS!\""
+                          },
+                          {
+                           "assign": "newwho",
+                           "value": "2"
+                          },
+                          {
+                           "call": "Say"
+                          }
+                         ]
+                        }
+                       ],
+                       "else": [
+                        {
+                         "assign": "r",
+                         "value": "floor(random * 6) + 1"
+                        },
+                        {
+                         "call": "Play_Sound(\"siri_dice\" + r + \".wav\")"
+                        },
+                        {
+                         "assign": "newtext",
+                         "value": "\"Siri: I rolled a dice... \" + r + \"!\""
+                        },
+                        {
+                         "assign": "newwho",
+                         "value": "2"
+                        },
+                        {
+                         "call": "Say"
+                        }
+                       ]
+                      }
+                     ]
+                    }
+                   ]
+                  }
+                 ]
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DoMath",
+   "body": [
+    {
+     "assign": "cnt",
+     "value": "0",
+     "comment": "Find the first two numbers and the operation word"
+    },
+    {
+     "assign": "na",
+     "value": "0"
+    },
+    {
+     "assign": "nb",
+     "value": "0"
+    },
+    {
+     "assign": "op",
+     "value": "0"
+    },
+    {
+     "for": "mk",
+     "from": "1",
+     "to": "ntok",
+     "body": [
+      {
+       "if": "isnum[mk] = 1",
+       "then": [
+        {
+         "assign": "cnt",
+         "value": "cnt + 1"
+        },
+        {
+         "if": "cnt = 1",
+         "then": [
+          {
+           "assign": "na",
+           "value": "numval[mk]"
+          }
+         ],
+         "else": [
+          {
+           "if": "cnt = 2",
+           "then": [
+            {
+             "assign": "nb",
+             "value": "numval[mk]"
+            }
+           ]
+          }
+         ]
+        }
+       ],
+       "else": [
+        {
+         "assign": "mt",
+         "value": "tok[mk]"
+        },
+        {
+         "if": "mt = \"plus\" or mt = \"add\" or mt = \"sum\" or mt = \"+\"",
+         "then": [
+          {
+           "assign": "op",
+           "value": "1"
+          }
+         ],
+         "else": [
+          {
+           "if": "mt = \"minus\" or mt = \"subtract\" or mt = \"-\"",
+           "then": [
+            {
+             "assign": "op",
+             "value": "2"
+            }
+           ],
+           "else": [
+            {
+             "if": "mt = \"times\" or mt = \"multiply\" or mt = \"multiplied\" or mt = \"x\" or mt = \"*\"",
+             "then": [
+              {
+               "assign": "op",
+               "value": "3"
+              }
+             ],
+             "else": [
+              {
+               "if": "mt = \"divided\" or mt = \"divide\" or mt = \"over\" or mt = \"/\"",
+               "then": [
+                {
+                 "assign": "op",
+                 "value": "4"
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "if": "cnt < 2",
+     "then": [
+      {
+       "call": "Play_Sound(\"siri_mathneed.wav\")"
+      },
+      {
+       "assign": "newtext",
+       "value": "\"Siri: Give me two whole numbers, for example: what is 12 times 7\""
+      },
+      {
+       "assign": "newwho",
+       "value": "2"
+      },
+      {
+       "call": "Say"
+      }
+     ],
+     "else": [
+      {
+       "if": "op = 0",
+       "then": [
+        {
+         "call": "Play_Sound(\"siri_mathop.wav\")"
+        },
+        {
+         "assign": "newtext",
+         "value": "\"Siri: Should I add, subtract, multiply or divide?\""
+        },
+        {
+         "assign": "newwho",
+         "value": "2"
+        },
+        {
+         "call": "Say"
+        }
+       ],
+       "else": [
+        {
+         "if": "op = 1",
+         "then": [
+          {
+           "call": "Play_Sound(\"siri_math.wav\")"
+          },
+          {
+           "assign": "newtext",
+           "value": "\"Siri: \" + na + \" + \" + nb + \" = \" + (na + nb)"
+          },
+          {
+           "assign": "newwho",
+           "value": "2"
+          },
+          {
+           "call": "Say"
+          }
+         ],
+         "else": [
+          {
+           "if": "op = 2",
+           "then": [
+            {
+             "call": "Play_Sound(\"siri_math.wav\")"
+            },
+            {
+             "assign": "newtext",
+             "value": "\"Siri: \" + na + \" - \" + nb + \" = \" + (na - nb)"
+            },
+            {
+             "assign": "newwho",
+             "value": "2"
+            },
+            {
+             "call": "Say"
+            }
+           ],
+           "else": [
+            {
+             "if": "op = 3",
+             "then": [
+              {
+               "call": "Play_Sound(\"siri_math.wav\")"
+              },
+              {
+               "assign": "newtext",
+               "value": "\"Siri: \" + na + \" x \" + nb + \" = \" + (na * nb)"
+              },
+              {
+               "assign": "newwho",
+               "value": "2"
+              },
+              {
+               "call": "Say"
+              }
+             ],
+             "else": [
+              {
+               "if": "nb = 0",
+               "then": [
+                {
+                 "call": "Play_Sound(\"siri_divzero.wav\")"
+                },
+                {
+                 "assign": "newtext",
+                 "value": "\"Siri: I cannot divide by zero!\""
+                },
+                {
+                 "assign": "newwho",
+                 "value": "2"
+                },
+                {
+                 "call": "Say"
+                }
+               ],
+               "else": [
+                {
+                 "call": "Play_Sound(\"siri_math.wav\")"
+                },
+                {
+                 "assign": "newtext",
+                 "value": "\"Siri: \" + na + \" / \" + nb + \" = \" + (na / nb)"
+                },
+                {
+                 "assign": "newwho",
+                 "value": "2"
+                },
+                {
+                 "call": "Say"
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "HasWord",
+   "body": [
+    {
+     "assign": "found",
+     "value": "0",
+     "comment": "Is the word in 'target' one of the sentence's words?"
+    },
+    {
+     "for": "hk",
+     "from": "1",
+     "to": "ntok",
+     "body": [
+      {
+       "if": "tok[hk] = target",
+       "then": [
+        {
+         "assign": "found",
+         "value": "1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Teach",
+   "body": [
+    {
+     "call": "Play_Sound(\"siri_teach.wav\")"
+    },
+    {
+     "assign": "newtext",
+     "value": "\"Siri: Sorry, I do not know that one yet. Teach me!\"",
+     "comment": "LEARNING: unknown sentence -> the user gives the intent,\nand its words are added to the training data"
+    },
+    {
+     "assign": "newwho",
+     "value": "2"
+    },
+    {
+     "call": "Say"
+    },
+    {
+     "assign": "newtext",
+     "value": "\"      1 goodbye   2 math   3 time   4 date   5 joke\""
+    },
+    {
+     "assign": "newwho",
+     "value": "2"
+    },
+    {
+     "call": "Say"
+    },
+    {
+     "assign": "newtext",
+     "value": "\"      6 greeting   7 about me   8 how are you   9 thanks   10 coin/dice\""
+    },
+    {
+     "assign": "newwho",
+     "value": "2"
+    },
+    {
+     "call": "Say"
+    },
+    {
+     "input": "cat",
+     "prompt": "Category number (0 = skip):"
+    },
+    {
+     "if": "cat >= 1 and cat <= nint and cat = floor(cat)",
+     "then": [
+      {
+       "assign": "learned",
+       "value": "0"
+      },
+      {
+       "for": "lk",
+       "from": "1",
+       "to": "ntok",
+       "body": [
+        {
+         "assign": "target",
+         "value": "tok[lk]"
+        },
+        {
+         "assign": "stop",
+         "value": "0"
+        },
+        {
+         "for": "lj",
+         "from": "1",
+         "to": "nsw",
+         "body": [
+          {
+           "if": "sw[lj] = target",
+           "then": [
+            {
+             "assign": "stop",
+             "value": "1"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "if": "isnum[lk] = 0 and stop = 0",
+         "then": [
+          {
+           "assign": "nlw",
+           "value": "nlw + 1",
+           "comment": "add the new word to the learned words"
+          },
+          {
+           "assign": "lw[nlw]",
+           "value": "target"
+          },
+          {
+           "assign": "lint[nlw]",
+           "value": "cat"
+          },
+          {
+           "assign": "learned",
+           "value": "learned + 1"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "assign": "newtext",
+       "value": "\"Siri: Got it! I learned \" + learned + \" new word(s) for: \" + iname[cat]"
+      },
+      {
+       "assign": "newwho",
+       "value": "2"
+      },
+      {
+       "call": "Say"
+      },
+      {
+       "assign": "best",
+       "value": "cat"
+      },
+      {
+       "call": "Respond"
+      }
+     ],
+     "else": [
+      {
+       "call": "Play_Sound(\"siri_never.wav\")"
+      },
+      {
+       "assign": "newtext",
+       "value": "\"Siri: OK, never mind.\""
+      },
+      {
+       "assign": "newwho",
+       "value": "2"
+      },
+      {
+       "call": "Say"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Say",
+   "body": [
+    {
+     "output": "newtext",
+     "comment": "also write it to the RAPTOR console"
+    },
+    {
+     "if": "nl < 14",
+     "then": [
+      {
+       "assign": "nl",
+       "value": "nl + 1"
+      }
+     ],
+     "else": [
+      {
+       "for": "sy",
+       "from": "1",
+       "to": "13",
+       "body": [
+        {
+         "assign": "line[sy]",
+         "value": "line[sy + 1]"
+        },
+        {
+         "assign": "who[sy]",
+         "value": "who[sy + 1]"
+        }
+       ],
+       "comment": "window full: scroll every line up by one"
+      }
+     ]
+    },
+    {
+     "assign": "line[nl]",
+     "value": "newtext"
+    },
+    {
+     "assign": "who[nl]",
+     "value": "newwho"
+    },
+    {
+     "call": "Clear_Window(White)",
+     "comment": "redraw the chat"
+    },
+    {
+     "call": "Draw_Box(0, 480, 800, 520, Blue, Filled)"
+    },
+    {
+     "call": "Display_Text(20, 508, \"Mini Siri  -  type in the input box, then click Done\", White)"
+    },
+    {
+     "for": "sy",
+     "from": "1",
+     "to": "nl",
+     "body": [
+      {
+       "assign": "ly",
+       "value": "470 - (sy - 1) * 32"
+      },
+      {
+       "if": "who[sy] = 1",
+       "then": [
+        {
+         "call": "Display_Text(20, ly, line[sy], Blue)"
+        }
+       ],
+       "else": [
+        {
+         "if": "who[sy] = 3",
+         "then": [
+          {
+           "call": "Display_Text(20, ly, line[sy], Dark_Gray)"
+          }
+         ],
+         "else": [
+          {
+           "call": "Display_Text(20, ly, line[sy], Black)"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
